@@ -19,9 +19,12 @@ index = GPTListIndex(documents)
 # index.save_to_disk('index.json')
 # index = GPTSimpleVectorIndex.load_from_disk('index.json')
 
+### PLEASE CHECK https://gpt-index.readthedocs.io/en/latest/guides/index_guide.html for detailed use of this parameter
 # response = index.query("Summarize the paper including main point of the author.", response_mode="tree_summarize") # good for summary
 response = index.query("What kind of folkways are mentioned in the paper as an example?", response_mode="default") # good for detailed answer
 print(response)
+
+
 
 if __name__ == "__main__":
     pass
