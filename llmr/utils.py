@@ -8,6 +8,7 @@ def extract_text_from_pdf(filepath):
         for page_number in range(number_of_pages):
             page = reader.pages[page_number]
             text += page.extract_text()
+            print("Page ", page_number, "Chunk ", len(text) // 4097)
         return text
 
 

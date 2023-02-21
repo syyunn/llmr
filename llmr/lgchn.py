@@ -1,35 +1,22 @@
 from langchain.llms import OpenAI
 from langchain.chains.qa_with_sources import load_qa_with_sources_chain
 from langchain.docstore.document import Document
+import utils
 
-import PyPDF2
+# filepath = './llmr/pdfs/Fenno1962.pdf'
+# # filepath = 'Matthews - 1959 - Folkways of the US Senate.pdf'
+# # filepath = './week1/Mayhew - 1974 - Congress The Electoral Connection intro, Ch. 1.pdf'
+# # filepath = './week1/Shepsle & Weingast (1994).pdf'
+# # filepath='./week1/Krehbiel - 1998 - Pivotal Politics Ch. 1-3.pdf'
 
-def extract_text_from_pdf(filepath):
-    with open(filepath, 'rb') as file:
-        reader = PyPDF2.PdfReader(file)
-        number_of_pages = len(reader.pages)
-        text = ''
-        for page_number in range(number_of_pages):
-            page = reader.pages[page_number]
-            text += page.extract_text()
-        return text
-
-filepath = './llmr/pdfs/Fenno1962.pdf'
-# filepath = 'Matthews - 1959 - Folkways of the US Senate.pdf'
-# filepath = './week1/Mayhew - 1974 - Congress The Electoral Connection intro, Ch. 1.pdf'
-# filepath = './week1/Shepsle & Weingast (1994).pdf'
-# filepath='./week1/Krehbiel - 1998 - Pivotal Politics Ch. 1-3.pdf'
+# text = utils.extract_text_from_pdf(filepath='/Users/syyun/Dropbox (MIT)/17.261/week2/Miller & Stokes - 1963 - Constituency Influence in Congress.pdf')
+# text = utils.extract_text_from_pdf(filepath='/Users/syyun/Dropbox (MIT)/17.261/week2/Brandice Canes-Wrone, David W. Brady, and John F. Cogan. 2002.pdf')
+# text = utils.extract_text_from_pdf(filepath='/Users/syyun/Dropbox (MIT)/17.424/week3/Carnegie2014.pdf')
+text = utils.extract_text_from_pdf(filepath='/Users/syyun/Dropbox (MIT)/17.424/week3/Milner_Kubota 2005.pdf')
+# text = utils.extract_text_from_pdf(filepath='/Users/syyun/Dropbox (MIT)/17.424/week3/Krasner2007.pdf')
 
 maxlen = 4097
-
-def spliter(text, maxlen):
-    chunks = []
-    for i in range(0, len(text), maxlen):
-        chunks.append(text[i:i+maxlen])
-    return chunks
-
-text = extract_text_from_pdf(filepath)
-chunks = spliter(text, maxlen)
+chunks = utils.spliter(text, maxlen)
 print(len(text))
 
 def make_documents(chunks, sources):
@@ -38,7 +25,7 @@ def make_documents(chunks, sources):
         Documents.append(Document(page_content=chunk, metadata={"source": source}))
     return Documents
 
-sources = [f'{filepath} Chunk {i}' for i in range(len(chunks))]
+sources = [f'Chunk {i}' for i in range(len(chunks))]
 Documents = make_documents(chunks, sources)
 
 import dotenv
@@ -77,14 +64,14 @@ def print_answer(question, documents, show_locator=False, show_question=False):
     pass
 
 # For full summary
-# for doc in Documents:
-#     print_answer("Summarize this section without starting your answer with \'this section\' or \'this paper [verb]...\'. In addition, Include the main findings of the author as well.", [doc], show_locator=True, show_question=False)
-#     pass
+for doc in Documents:
+    print_answer("Summarize this section without starting your answer with \'this section\' or \'this paper, etc\'. In addition, Include the main findings of the author as well.", [doc], show_locator=True, show_question=False)
+    pass
+
+# # For specific section
+# # for doc in Documents[9:]:
+# #     print_answer("Why is it hard to maintain the reciprocity when subcommittee badly divided? what does it even mean badly divided?", [doc], show_locator=True, show_question=False)
 
 # For specific section
-# for doc in Documents[9:]:
-#     print_answer("Why is it hard to maintain the reciprocity when subcommittee badly divided? what does it even mean badly divided?", [doc], show_locator=True, show_question=False)
-
-# For specific section
-print_answer("What does it mean that attractiveness of the Committee for its members? Why do they need this?", [Documents[1]], show_locator=True, show_question=False)
+# print_answer("What is the political hold-up problem according to author?", [Documents[1]], show_locator=True, show_question=False)
 pass
